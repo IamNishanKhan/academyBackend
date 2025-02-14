@@ -1,0 +1,37 @@
+name: Deploy Django Backend to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Change this if your main branch has a different name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to cPanel
+        uses: pinkasey/cpanel-repository-action@v1.2.0
+        with:
+          hostname: ${{ secrets.CPANEL_HOSTNAME }}
+          cPanelApiPort: 2083
+          cpanel_token: ${{ secrets.CPANEL_TOKEN }}
+          cpanel_username: ${{ secrets.CPANEL_USERNAME }}
+          repository_root: ${{ secrets.CPANEL_REPOSITORY_PATH }}
+          branch: ${{ secrets.BRANCH }}
+
+      - name: SSH into cPanel and Restart Server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.CPANEL_HOSTNAME }}
+          username: ${{ secrets.CPANEL_USERNAME }}
+          password: ${{ secrets.CPANEL_PASSWORD }} # If using SSH keys, replace with private key
+          script: |
+            source /home/bigmoqks/virtualenv/academyBackend/3.10/bin/activate
+            cd /home/bigmoqks/academyBackend
+            pip install -r requirements.txt
+            python manage.py migrate
+            python manage.py collectstatic --noinput
+            touch restart.txt
