@@ -19,7 +19,7 @@ jobs:
           cPanelApiPort: 2083
           cpanel_token: ${{ secrets.CPANEL_TOKEN }}
           cpanel_username: ${{ secrets.CPANEL_USERNAME }}
-          repository_root: ${{ secrets.CPANEL_REPOSITORY_PATH }}
+          repository_root: /home/bigmoqks/academyBackend  # Fixed repository path
           branch: ${{ secrets.BRANCH }}
 
       - name: SSH into cPanel and Restart Server
@@ -27,7 +27,7 @@ jobs:
         with:
           host: ${{ secrets.CPANEL_HOSTNAME }}
           username: ${{ secrets.CPANEL_USERNAME }}
-          password: ${{ secrets.CPANEL_PASSWORD }} # If using SSH keys, replace with private key
+          password: ${{ secrets.CPANEL_PASSWORD }}  # If using SSH keys, replace with private key
           script: |
             source /home/bigmoqks/virtualenv/academyBackend/3.10/bin/activate
             cd /home/bigmoqks/academyBackend
