@@ -1,0 +1,23 @@
+name: Deploy Django to cPanel
+
+on:
+  push:
+    branches:
+      - main  # Change this if using a different branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Trigger Deployment Script on cPanel
+      run: |
+        ssh -o StrictHostKeyChecking=no bigmoqks@your-cpanel-ip << 'EOF'
+        cd /home/bigmoqks/academyBackend
+        git pull origin main
+        source /home/bigmoqks/virtualenv/academyBackend/3.10/bin/activate
+        pip install -r requirements.txt
+        python manage.py migrate
+        python manage.py collectstatic --noinput
+        systemctl restart apache2 || touch tmp/restart.txt
+        EOF
