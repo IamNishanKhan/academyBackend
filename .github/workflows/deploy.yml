@@ -19,7 +19,7 @@ jobs:
           cPanelApiPort: 2083
           cpanel_token: ${{ secrets.CPANEL_TOKEN }}
           cpanel_username: ${{ secrets.CPANEL_USERNAME }}
-          repository_root: /home/bigmoqks/academyBackend  # Fixed repository path
+          repository_root: /home/bigmoqks/repositories/academyBackend  # Updated repository path
           branch: ${{ secrets.BRANCH }}
 
       - name: SSH into cPanel and Restart Server
@@ -29,8 +29,8 @@ jobs:
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}  # If using SSH keys, replace with private key
           script: |
-            source /home/bigmoqks/virtualenv/academyBackend/3.10/bin/activate
-            cd /home/bigmoqks/academyBackend
+            source /home/bigmoqks/repositories/academyBackend/virtualenv/3.10/bin/activate  # Updated virtual environment path
+            cd /home/bigmoqks/repositories/academyBackend  # Updated working directory
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
