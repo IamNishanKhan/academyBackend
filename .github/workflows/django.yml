@@ -10,14 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup SSH Key
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > private_key
+        chmod 600 private_key
+        ssh -o StrictHostKeyChecking=no -i private_key bigmoqks@your-cpanel-ip "echo SSH Connected"
+
     - name: Trigger Deployment Script on cPanel
       run: |
-        ssh -o StrictHostKeyChecking=no bigmoqks@your-cpanel-ip << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i private_key bigmoqks@your-cpanel-ip << 'EOF'
         cd /home/bigmoqks/academyBackend
         git pull origin main
         source /home/bigmoqks/virtualenv/academyBackend/3.10/bin/activate
         pip install -r requirements.txt
         python manage.py migrate
         python manage.py collectstatic --noinput
-        systemctl restart apache2 || touch tmp/restart.txt
+        touch /home/bigmoqks/academyBackend/tmp/restart.txt
         EOF
