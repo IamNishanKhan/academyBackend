@@ -19,8 +19,9 @@ jobs:
           cPanelApiPort: 2083
           cpanel_token: ${{ secrets.CPANEL_TOKEN }}
           cpanel_username: ${{ secrets.CPANEL_USERNAME }}
-          repository_root: /home/bigmoqks/repositories/academyBackend  # Updated repository path
+          repository_root: /home/bigmoqks/repositories/academyBackend  # Correct repository path
           branch: ${{ secrets.BRANCH }}
+          timeout: 300000  # Increased timeout to 30 seconds
 
       - name: SSH into cPanel and Restart Server
         uses: appleboy/ssh-action@v0.1.10
@@ -29,8 +30,8 @@ jobs:
           username: ${{ secrets.CPANEL_USERNAME }}
           password: ${{ secrets.CPANEL_PASSWORD }}  # If using SSH keys, replace with private key
           script: |
-            source /home/bigmoqks/repositories/academyBackend/virtualenv/3.10/bin/activate  # Updated virtual environment path
-            cd /home/bigmoqks/repositories/academyBackend  # Updated working directory
+            source /home/bigmoqks/repositories/academyBackend/virtualenv/3.10/bin/activate  # Correct virtual environment path
+            cd /home/bigmoqks/repositories/academyBackend  # Correct working directory
             pip install -r requirements.txt
             python manage.py migrate
             python manage.py collectstatic --noinput
