@@ -1,16 +1,35 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Course
+from .models import Course, CourseOutcome, CoursePrerequisite
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+class CourseOutcomeInline(admin.TabularInline):
+    model = CourseOutcome
+    extra = 1
+
+class CoursePrerequisiteInline(admin.TabularInline):
+    model = CoursePrerequisite
+    extra = 1
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('course_id', 'title', 'category', 'instructor', 'price', 'created_at', 'updated_at')
     search_fields = ('title', 'category__category_name', 'user__first_name', 'user__last_name')
     list_filter = ('category', 'user', 'created_at')
     ordering = ('created_at',)
-    fields = ('category', 'user', 'title', 'description', 'price', 'thumbnail')
+    inlines = [CourseOutcomeInline, CoursePrerequisiteInline]
+
+    fieldsets = (
+        (None, {
+            'fields': ('category', 'user', 'title', 'description', 'price', 'thumbnail')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',),
+        }),
+    )
+
     readonly_fields = ('created_at', 'updated_at')
 
     def instructor(self, obj):

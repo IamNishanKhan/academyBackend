@@ -8,7 +8,7 @@ class ReadOnly(AllowAny):
         return request.method in ('GET', 'HEAD', 'OPTIONS')
 
 class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
+    queryset = Course.objects.select_related("category").prefetch_related("outcomes", "prerequisites").all()
     serializer_class = CourseSerializer
     permission_classes = [ReadOnly]
 

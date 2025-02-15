@@ -15,3 +15,21 @@ class Course(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class CourseOutcome(models.Model):
+    outcome_id = models.AutoField(primary_key=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="outcomes")
+    outcome_title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.outcome_title
+
+
+class CoursePrerequisite(models.Model):
+    prerequisite_id = models.AutoField(primary_key=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="prerequisites")
+    prerequisite_title = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.prerequisite_title
