@@ -1,33 +1,32 @@
 from django.contrib import admin
-from .models import Lesson
-from modules.models import Module  # Import the Module model
+from .models import Lesson, LessonVideo, LessonResource
+from modules.models import Module
 
-class ModuleAdminDisplay(admin.ModelAdmin):
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        return queryset.select_related('course')  # Optimize DB query
+class LessonVideoInline(admin.TabularInline):
+    model = LessonVideo
+    extra = 1
 
-    def display_module_with_course(self, obj):
-        return f"{obj.title} - {obj.course.title}"  # Show "Module Name - Course Name"
-
-    display_module_with_course.short_description = "Module (Course)"  # Rename column in admin panel
+class LessonResourceInline(admin.TabularInline):
+    model = LessonResource
+    extra = 1
 
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ('lesson_id', 'title', 'module', 'get_course', 'duration', 'order', 'created_at')
-    list_filter = ('module', 'module__course', 'created_at')  # Add course filter
-    search_fields = ('title', 'module__title', 'module__course__title')  # Search modules & courses
+    list_display = ('lesson_id', 'title', 'module', 'get_course', 'order', 'created_at')
+    list_filter = ('module', 'module__course', 'created_at')
+    search_fields = ('title', 'module__title', 'module__course__title')
 
-    # Custom method to show Course Name
+    inlines = [LessonVideoInline, LessonResourceInline]
+
     def get_course(self, obj):
-        return obj.module.course.title  # Get course name from module
+        return obj.module.course.title
 
-    get_course.short_description = "Course"  # Rename column in admin panel
+    get_course.short_description = "Course"
 
     fieldsets = (
         (None, {
-            'fields': ('module', 'title', 'video_url', 'duration', 'order')
+            'fields': ('module', 'title', 'order')
         }),
-        ('Timestamp Information', {
+        ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',),
         }),

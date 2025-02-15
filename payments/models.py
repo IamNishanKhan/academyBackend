@@ -3,7 +3,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from accounts.models import User
 from courses.models import Course
-from enrollments.models import Enrollment  # Import the Enrollment model
+from enrollments.models import Enrollment
 
 class Payment(models.Model):
     PAYMENT_METHOD_CHOICES = [
@@ -31,7 +31,6 @@ class Payment(models.Model):
     def __str__(self):
         return f"Payment {self.payment_id} - {self.user.email}"
 
-# Signal to enroll user when payment is successful
 @receiver(post_save, sender=Payment)
 def enroll_user_on_payment(sender, instance, created, **kwargs):
     if created and instance.payment_status == 'completed':
