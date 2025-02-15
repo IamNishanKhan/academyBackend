@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Users must have a phone number")
         
         email = self.normalize_email(email)
-        user = self.model(first_name=first_name, last_name=last_name, email=email, phone=phone, role=role)
+        user = self.model(first_name=first_name, last_name=last_name, email=email, phone=phone, role=role, is_verified=False)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -18,6 +18,7 @@ class UserManager(BaseUserManager):
         user = self.create_user(first_name, last_name, email, phone, password, role='admin')
         user.is_staff = True
         user.is_superuser = True
+        user.is_verified = True
         user.save(using=self._db)
         return user
 
@@ -42,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_verified = models.BooleanField(default=False)
     
     objects = UserManager()
     
@@ -50,3 +52,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def __str__(self):
         return self.email
+

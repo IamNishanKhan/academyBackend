@@ -1,9 +1,6 @@
-from rest_framework import serializers
-from django.contrib.auth import authenticate
 from .models import User
 from rest_framework import serializers
 from django.contrib.auth import authenticate
-from .models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,16 +16,6 @@ class UserSerializer(serializers.ModelSerializer):
             'bio': {'required': False},
         }
 
-class RegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['first_name', 'last_name', 'email', 'phone', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
-
 
 
 class LoginSerializer(serializers.Serializer):
@@ -39,6 +26,10 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(email=data['email'], password=data['password'])
         if not user:
             raise serializers.ValidationError("Invalid credentials")
+        
+        if not user.is_verified:
+            raise serializers.ValidationError("Email not verified. Please verify your email.")
+
         return {'user': user}
 
 
@@ -53,11 +44,8 @@ class ChangePasswordSerializer(serializers.Serializer):
         return data
     
 
-from rest_framework import serializers
-from accounts.models import User
-
 class UserProfileSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.SerializerMethodField()  # ✅ Ensures full URL
+    profile_picture = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -74,7 +62,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_profile_picture(self, obj):
         """Ensures `profile_picture` returns a full URL instead of a relative path."""
-        request = self.context.get("request")  # ✅ Get request context
+        request = self.context.get("request")
         if obj.profile_picture:
             return request.build_absolute_uri(obj.profile_picture.url) if request else obj.profile_picture.url
-        return None  # ✅ If no profile picture, return `None`
+        return None
