@@ -1,12 +1,11 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.generics import get_object_or_404
 from courses.models import Course
 from aggregated_api.serializers import GlobalCourseSerializer, EnrolledCourseSerializer
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 from enrollments.models import Enrollment
+from rest_framework import status
 
 
 class GlobalCourseView(APIView):
@@ -24,7 +23,7 @@ class GlobalCourseView(APIView):
 
 
 class EnrolledCourseDetailView(APIView):
-    permission_classes = [IsAuthenticated]  # ✅ Require authentication
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, course_id):
         # Check if the user is enrolled in the course
