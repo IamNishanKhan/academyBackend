@@ -18,7 +18,9 @@ class GlobalCourseView(APIView):
                 'modules',
                 'modules__lessons',
                 'modules__lessons__videos',
-                'modules__lessons__resources'
+                'modules__lessons__resources',
+                'outcomes',
+                'prerequisites'
             ),
             course_id=course_id
         )
@@ -46,7 +48,9 @@ class EnrolledCourseDetailView(APIView):
                 'modules',
                 'modules__lessons',
                 'modules__lessons__videos',
-                'modules__lessons__resources'
+                'modules__lessons__resources',
+                'outcomes',
+                'prerequisites'
             ),
             course_id=course_id
         )

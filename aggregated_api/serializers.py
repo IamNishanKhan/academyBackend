@@ -1,7 +1,21 @@
 from rest_framework import serializers
-from courses.models import Course
+from courses.models import Course, CourseOutcome, CoursePrerequisite
 from modules.models import Module
 from lessons.models import Lesson, LessonVideo, LessonResource
+
+class CourseOutcomeSerializer(serializers.ModelSerializer):
+    course_id = serializers.IntegerField(source='course.course_id')
+
+    class Meta:
+        model = CourseOutcome
+        fields = ['course_id', 'outcome_id', 'outcome_title']
+
+class CoursePrerequisiteSerializer(serializers.ModelSerializer):
+    course_id = serializers.IntegerField(source='course.course_id')
+
+    class Meta:
+        model = CoursePrerequisite
+        fields = ['course_id', 'prerequisite_id', 'prerequisite_title']
 
 class GlobalLessonVideoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,10 +52,15 @@ class GlobalCourseSerializer(serializers.ModelSerializer):
     instructor_name = serializers.SerializerMethodField()
     modules = GlobalModuleSerializer(many=True, read_only=True)
     course_title = serializers.CharField(source='title')
+    outcomes = CourseOutcomeSerializer(many=True, read_only=True)
+    prerequisites = CoursePrerequisiteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = ['course_id', 'course_title', 'description', 'price', 'category_id', 'category_name', 'instructor_name', 'modules']
+        fields = [
+            'course_id', 'course_title', 'description', 'price', 'category_id',
+            'category_name', 'instructor_name', 'modules', 'outcomes', 'prerequisites'
+        ]
 
     def get_instructor_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
@@ -81,10 +100,15 @@ class EnrolledCourseSerializer(serializers.ModelSerializer):
     instructor_name = serializers.SerializerMethodField()
     modules = EnrolledModuleSerializer(many=True, read_only=True)
     course_title = serializers.CharField(source='title')
+    outcomes = CourseOutcomeSerializer(many=True, read_only=True)
+    prerequisites = CoursePrerequisiteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
-        fields = ['course_id', 'course_title', 'description', 'price', 'category_id', 'category_name', 'instructor_name', 'modules']
+        fields = [
+            'course_id', 'course_title', 'description', 'price', 'category_id',
+            'category_name', 'instructor_name', 'modules', 'outcomes', 'prerequisites'
+        ]
 
     def get_instructor_name(self, obj):
         return f"{obj.user.first_name} {obj.user.last_name}"
