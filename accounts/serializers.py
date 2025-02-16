@@ -17,7 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 
-
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
@@ -31,7 +30,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Email not verified. Please verify your email.")
 
         return {'user': user}
-
 
 
 class ChangePasswordSerializer(serializers.Serializer):
