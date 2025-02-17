@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from .models import Course
+from .models import Course, CourseOutcome
+
+
+class CourseOutcomeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CourseOutcome
+        fields = ["outcome_id", "outcome_title"]
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -8,12 +14,13 @@ class CourseSerializer(serializers.ModelSerializer):
     course_title = serializers.CharField(source='title', read_only=True)
     category_id = serializers.IntegerField(source='category.category_id', read_only=True)
     category_name = serializers.CharField(source='category.category_name', read_only=True)
+    outcomes = CourseOutcomeSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course
         fields = [
             "course_id", "course_title", "instructor_id", "instructor_name",
-            "description", "price", "thumbnail", "created_at", "updated_at",
+            "description", "outcomes", "price", "thumbnail", "created_at", "updated_at",
             "category_id", "category_name"
         ]
 
