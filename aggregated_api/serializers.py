@@ -58,7 +58,7 @@ class GlobalCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            'course_id', 'course_title', 'description', 'price', 'category_id',
+            'course_id', 'course_title', 'thumbnail', 'description', 'price', 'category_id',
             'category_name', 'instructor_name', 'modules', 'outcomes', 'prerequisites'
         ]
 
@@ -106,7 +106,7 @@ class EnrolledCourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = [
-            'course_id', 'course_title', 'description', 'price', 'category_id',
+            'course_id', 'course_title', 'thumbnail', 'description', 'price', 'category_id',
             'category_name', 'instructor_name', 'modules', 'outcomes', 'prerequisites'
         ]
 
