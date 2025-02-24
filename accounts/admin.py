@@ -8,19 +8,19 @@ from django.contrib.auth.models import Group
 
 class CustomUserAdmin(UserAdmin):
     model = User
-    list_display = ('email', 'first_name', 'last_name', 'phone', 'role', 'is_active', 'is_staff', 'edit_user')  # Add 'edit_user'
-    list_filter = ('role', 'is_staff', 'is_active')
+    list_display = ('email', 'first_name', 'last_name', 'phone', 'role', 'is_active', 'is_staff', 'is_verified', 'edit_user')  # Added 'is_verified'
+    list_filter = ('role', 'is_staff', 'is_active', 'is_verified')
 
     fieldsets = (
         ('Personal Info', {'fields': ('first_name', 'last_name', 'email', 'phone', 'password', 'profile_picture', 'bio')}),
-        ('Permissions', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser')}),
+        ('Permissions', {'fields': ('role', 'is_active', 'is_staff', 'is_superuser', 'is_verified')}),
         ('Important Dates', {'fields': ('last_login', 'updated_at')}), 
     )
 
     add_fieldsets = (
         ('Create User', {
             'classes': ('wide',),
-            'fields': ('first_name', 'last_name', 'email', 'phone', 'password1', 'password2', 'role', 'is_active', 'is_staff')}
+            'fields': ('first_name', 'last_name', 'email', 'phone', 'password1', 'password2', 'role', 'is_active', 'is_staff', 'is_verified')}
         ),
     )
     
@@ -35,8 +35,7 @@ class CustomUserAdmin(UserAdmin):
         return format_html(f'<a class="button" href="{url}">Edit</a>')
 
     edit_user.short_description = "Edit"
-    edit_user.allow_tags = True  # Allows HTML rendering in Django Admin
+    edit_user.allow_tags = True
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.unregister(Group)
-
